@@ -2,20 +2,105 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+	:root {
+		--background: 272 30% 98%;
+		--foreground: 272 57% 5%;
+		--muted: 272 33% 85%;
+		--muted-foreground: 272 10% 29%;
+		--popover: 272 30% 98%;
+		--popover-foreground: 272 57% 5%;
+		--card: 272 30% 98%;
+		--card-foreground: 272 57% 5%;
+		--border: 272 9% 88%;
+		--input: 272 9% 88%;
+		--primary: 272 69% 71%;
+		--primary-foreground: 272 69% 11%;
+		--secondary: 272 20% 81%;
+		--secondary-foreground: 272 20% 21%;
+		--accent: 272 20% 81%;
+		--accent-foreground: 272 20% 21%;
+		--destructive: 0 95% 23%;
+		--destructive-foreground: 0 95% 83%;
+		--ring: 272 69% 71%;
+		--chart-1: 272 69% 71%;
+		--chart-2: 272 20% 81%;
+		--chart-3: 272 20% 81%;
+		--chart-4: 272 20% 84%;
+		--chart-5: 272 72% 71%;
+		--radius: 0.5rem;
+		--logo-circle-bg: black;
+		--logo-stripes-color: white;
+	}
+	.dark {
+		--background: 272 54% 2%;
+		--foreground: 272 24% 99%;
+		--muted: 272 33% 15%;
+		--muted-foreground: 272 10% 71%;
+		--popover: 272 54% 2%;
+		--popover-foreground: 272 24% 99%;
+		--card: 272 54% 2%;
+		--card-foreground: 272 24% 99%;
+		--border: 272 9% 15%;
+		--input: 272 9% 15%;
+		--primary: 272 69% 71%;
+		--primary-foreground: 272 69% 11%;
+		--secondary: 272 9% 20%;
+		--secondary-foreground: 272 9% 80%;
+		--accent: 272 9% 20%;
+		--accent-foreground: 272 9% 80%;
+		--destructive: 0 95% 51%;
+		--destructive-foreground: 0 0% 100%;
+		--ring: 272 69% 71%;
+		--chart-1: 272 69% 71%;
+		--chart-2: 272 9% 20%;
+		--chart-3: 272 9% 20%;
+		--chart-4: 272 9% 23%;
+		--chart-5: 272 72% 71%;
+		--logo-circle-bg: black;
+		--logo-stripes-color: white;
+	}
+	/* скроллбар */
+	::-webkit-scrollbar {
+		width: 8px;
+		height: 8px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: hsl(var(--muted));
+		border-radius: var(--radius);
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: hsl(var(--primary));
+		border-radius: var(--radius);
+		transition: background-color 0.2s ease;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background: hsl(var(--primary) / 80%);
+	}
+
+	/* Для Firefox */
+	* {
+		scrollbar-width: thin;
+		scrollbar-color: hsl(var(--primary)) hsl(var(--muted));
+	}
+
+	html {
+		overflow: overlay;
+	}
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
 }

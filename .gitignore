@@ -10,6 +10,8 @@
 !.yarn/releases
 !.yarn/versions
 
+/ERR_PNPM_ENV_UNKNOWN_SUBCOMMAND
+
 # testing
 /coverage
 
