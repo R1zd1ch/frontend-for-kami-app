@@ -16,6 +16,7 @@ declare module 'next-auth' {
 			refreshToken: string
 			expiresAt: string
 			expiresIn: string
+			exp: number
 		}
 	}
 }
@@ -38,6 +39,7 @@ declare module 'next-auth/jwt' {
 			refreshToken: string
 			expiresAt: string
 			expiresIn: string
+			exp: number
 		}
 	}
 }

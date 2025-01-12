@@ -6,6 +6,7 @@ import {
 	getMoodsByCurrentWeek,
 	getMoodsByCurrentMonth,
 } from '@/api/mood'
+export const dynamic = 'force-dynamic'
 
 export default async function Page() {
 	const session = await getSession()

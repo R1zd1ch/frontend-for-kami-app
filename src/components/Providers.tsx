@@ -11,7 +11,7 @@ const Providers = ({
 }: React.ComponentProps<typeof NextThemesProvider>) => {
 	return (
 		<NextThemesProvider {...props}>
-			<SessionProvider>
+			<SessionProvider refetchInterval={1}>
 				<Toaster></Toaster>
 				{children}
 			</SessionProvider>

@@ -3,6 +3,10 @@ import getSession from '@/lib/getSession'
 import { getTasks } from '@/api/tasks'
 import TaskBoard from '@/components/tasks/TaskBoard'
 
+export const dynamic = 'force-dynamic'
+
+export const revalidate = 1
+
 export default async function Page() {
 	const session = await getSession()
 	const token = session?.tokens.accessToken

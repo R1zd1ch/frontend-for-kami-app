@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import getSession from '@/lib/getSession'
 import { getAllNotes } from '@/api/notes'
 import NoteBoard from '@/components/notes/NoteBoard'
+export const dynamic = 'force-dynamic'
 
 export default async function Page() {
 	const session = await getSession()

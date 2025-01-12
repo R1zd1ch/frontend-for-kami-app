@@ -2,6 +2,7 @@ import { fetchProfile } from '@/api/fetchprofile'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import ProfileHeader from '@/components/profile/ProfileHeader'
 import { UserProfile } from '@/lib/types'
+export const dynamic = 'force-dynamic'
 
 import { getServerSession } from 'next-auth'
 

@@ -11,6 +11,7 @@ import {
 } from 'next/font/google'
 import './globals.css'
 import Providers from '@/components/Providers'
+export const dynamic = 'force-dynamic'
 
 // const geistSans = Geist({
 // 	variable: '--font-geist-sans',

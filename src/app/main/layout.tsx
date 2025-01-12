@@ -34,6 +34,7 @@ export default async function RootLayout({
 	return (
 		<Suspense fallback={null}>
 			<SidebarDataProvider>
+				{/* <TokenRefresher></TokenRefresher> */}
 				<SocketProvider userId={id}>
 					<div className='grid min-h-screen max-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]'>
 						<Sidebar

@@ -1,6 +1,8 @@
 import { BACKEND_URL } from '@/lib/constants'
+import { jwtDecode } from 'jwt-decode'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
+
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 export const authOptions: NextAuthOptions = {
@@ -11,7 +13,6 @@ export const authOptions: NextAuthOptions = {
 				username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
 				password: { label: 'Password', type: 'password' },
 			},
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			async authorize(credentials, req) {
 				if (!credentials?.username || !credentials?.password) {
 					return null
@@ -28,38 +29,36 @@ export const authOptions: NextAuthOptions = {
 					console.log(res.statusText)
 					return null
 				}
+
 				const user = await res.json()
-				return user
+				const exp = jwtDecode(user.tokens.accessToken).exp
+
+				return {
+					...user,
+					tokens: {
+						...user.tokens,
+						exp,
+					},
+				}
 			},
 		}),
 	],
 	callbacks: {
-		async jwt({ token, user }) {
-			if (user) {
-				console.log('New user logged in:', user)
+		async jwt({ token, user, account }) {
+			if (account && user) {
 				return { ...token, ...user }
 			}
+			console.log('revalidating')
 
-			console.log('Current time:', new Date().getTime())
-			console.log(
-				'Token expires at:',
-				new Date(token.tokens.expiresAt).getTime()
-			)
-
-			const expiresAt = new Date(token.tokens.expiresIn).getTime()
-			if (expiresAt !== 0 && new Date().getTime() < expiresAt) {
-				console.log('Token is still valid.')
+			// Return previous token if the access token has not expired yet
+			if (Date.now() < token.tokens.exp * 1000 - 10000) {
 				return token
 			}
 
-			if (expiresAt === 0) return token
-
-			// const newToken = await refreshAccessToken(token)
-
+			// Access token has expired, try to update it
 			return refreshAccessToken(token)
 		},
-
-		async session({ token, session }) {
+		async session({ session, token }) {
 			session.user = token.user
 			session.tokens = token.tokens
 			return session
@@ -69,6 +68,9 @@ export const authOptions: NextAuthOptions = {
 		signIn: '/auth/signin',
 	},
 	secret: process.env.NEXTAUTH_SECRET,
+	session: {
+		strategy: 'jwt',
+	},
 }
 
 async function refreshAccessToken(token: JWT) {
@@ -92,11 +94,13 @@ async function refreshAccessToken(token: JWT) {
 	console.log('Refreshed')
 
 	const data = await res.json()
+	const exp = jwtDecode(data.accessToken).exp
 	console.log(data)
 	return {
 		...token,
 		tokens: {
 			...data,
+			exp,
 		},
 	}
 }
