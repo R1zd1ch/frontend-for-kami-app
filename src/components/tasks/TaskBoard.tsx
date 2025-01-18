@@ -13,7 +13,7 @@ const CompletedTasks = dynamic(
 import { Task } from '@/lib/types'
 import { useEffect, useState } from 'react'
 import { columns } from './ext'
-import { createTask, deleteTask, updateTask } from '@/api/tasks'
+import { createTask, deleteTask, getTasks, updateTask } from '@/api/tasks'
 import { CreateTaskModal } from './CreateTaskModal'
 import {
 	DndContext,
@@ -30,19 +30,19 @@ import TaskItem from './TaskItem'
 import { arrayMove } from '@dnd-kit/sortable'
 import useSidebarStore from '@/storage/countSidebar'
 import { toast } from 'sonner'
-const TaskBoard = ({
-	initialTasks,
-	token,
-	id,
-}: {
-	initialTasks: Task[]
-	id: string
-	token: string
-}) => {
-	const [tasks, setTasks] = useState(initialTasks)
+const TaskBoard = ({ token, id }: { id: string; token: string }) => {
+	const [tasks, setTasks] = useState<Task[]>([])
 	const [activeTask, setActiveTask] = useState<Task | null>(null)
 	const [isClient, setIsClient] = useState(false)
 	const { incrementItemLength, decrementItemLength } = useSidebarStore()
+
+	useEffect(() => {
+		const fetchTasks = async () => {
+			const tasks = await getTasks(id)
+			setTasks(tasks)
+		}
+		fetchTasks()
+	}, [])
 
 	useEffect(() => {
 		setIsClient(true)
@@ -188,21 +188,16 @@ const TaskBoard = ({
 			'createdAt' | 'updatedAt' | 'userId' | 'isCompleted'
 		>
 	): Promise<void> => {
-		const updatedTaskRes = await updateTask(
-			id,
-			updatedTask.id,
-			{
-				title: updatedTask.title,
-				selectDay: updatedTask.selectDay,
-				description: updatedTask.description,
-				isCompleted:
-					updatedTask.selectDay === 'Выполненные задачи' ? true : false,
-				subject: updatedTask.subject,
-				dueDate: updatedTask.dueDate,
-				importance: updatedTask.importance,
-			},
-			token
-		)
+		const updatedTaskRes = await updateTask(id, updatedTask.id, {
+			title: updatedTask.title,
+			selectDay: updatedTask.selectDay,
+			description: updatedTask.description,
+			isCompleted:
+				updatedTask.selectDay === 'Выполненные задачи' ? true : false,
+			subject: updatedTask.subject,
+			dueDate: updatedTask.dueDate,
+			importance: updatedTask.importance,
+		})
 		toast('Задача обновлена', {
 			description: 'Задача успешно обновлена',
 			duration: 2000,

@@ -1,5 +1,4 @@
 'use client'
-import { SessionProvider } from 'next-auth/react'
 import * as React from 'react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { Toaster } from 'sonner'
@@ -11,10 +10,8 @@ const Providers = ({
 }: React.ComponentProps<typeof NextThemesProvider>) => {
 	return (
 		<NextThemesProvider {...props}>
-			<SessionProvider refetchInterval={1}>
-				<Toaster></Toaster>
-				{children}
-			</SessionProvider>
+			<Toaster></Toaster>
+			{children}
 		</NextThemesProvider>
 	)
 }

@@ -19,7 +19,7 @@ import {
 	UserRoundX,
 } from 'lucide-react'
 import { menuItems } from './data-naviagtion'
-import { useSession } from 'next-auth/react'
+
 import Link from 'next/link'
 import { generateHref } from '@/lib/utils'
 
@@ -74,10 +74,8 @@ export default function NavUser({
 	isSmall?: boolean
 }) {
 	const [open, setOpen] = useState(false)
-	const { data: session } = useSession()
-	console.log(session)
 
-	if (!session) {
+	if (user.name === '' && user.email === '' && user.avatar === '') {
 		return (
 			<DropdownMenu open={open} onOpenChange={setOpen}>
 				<DropdownMenuTrigger asChild>

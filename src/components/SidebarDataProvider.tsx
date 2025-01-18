@@ -1,17 +1,20 @@
 'use client'
 import useSidebarStore from '@/storage/countSidebar'
-import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
+import { UserProfile } from '@/lib/types'
 
-const SidebarDataProvider = ({ children }: { children: React.ReactNode }) => {
-	const session = useSession()
-	const { loadItemsFromBackend, itemLengths } = useSidebarStore()
+const SidebarDataProvider = ({
+	children,
+	session,
+}: {
+	children: React.ReactNode
+	session: UserProfile
+}) => {
+	const { loadItemsFromBackend } = useSidebarStore()
+
 	useEffect(() => {
-		if (session.status === 'authenticated')
-			loadItemsFromBackend(
-				session.data.user.id,
-				session.data.tokens.accessToken
-			)
+		console.log(session, 'HOHOHO')
+		if (session) loadItemsFromBackend(session.user.id)
 	}, [session])
 
 	return <>{children}</>

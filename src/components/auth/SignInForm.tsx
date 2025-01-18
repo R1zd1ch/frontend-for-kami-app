@@ -4,7 +4,6 @@ import CardWrapper from './CardWrapper'
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -18,10 +17,12 @@ import { Button } from '../ui/button'
 import { z } from 'zod'
 import { useFormStatus } from 'react-dom'
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
+import { login } from '@/lib/auth'
+import { useRouter } from 'next/navigation'
 
 const SignInForm = ({}) => {
 	const [loading, setLoading] = useState(false)
+	const router = useRouter()
 
 	const form = useForm({
 		resolver: zodResolver(SignInSchema),
@@ -34,12 +35,9 @@ const SignInForm = ({}) => {
 	const onSubmit = async (data: z.infer<typeof SignInSchema>) => {
 		setLoading(true)
 		console.log(data)
-		const result = await signIn('credentials', {
-			redirect: true,
-			callbackUrl: '/main',
-			username: data.username,
-			password: data.password,
-		})
+		const result = await login(data.username, data.password)
+		console.log(result)
+		// router.push('/main')
 		if (result?.error) {
 			console.log(result.error)
 			setLoading(false)

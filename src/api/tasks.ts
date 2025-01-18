@@ -1,87 +1,60 @@
-import { BACKEND_URL } from '@/lib/constants'
+'use server'
+import api from './serverApi'
 import { Task } from '@/lib/types'
 
-export const getTasks = async (id: string, token: string) => {
-	const response = await fetch(`${BACKEND_URL}/tasks/${id}`, {
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
-		},
-	})
-	if (!response.ok) {
-		throw new Error('Failed to fetch tasks')
+export const getTasks = async (id: string) => {
+	try {
+		const response = await api.get(`/tasks/${id}`)
+		return response.data
+	} catch (error) {
+		console.error('Failed to fetch tasks:', error)
+		throw error
 	}
-	const data = await response.json()
-	return data
 }
 
 export const createTask = async (
 	id: string,
-	data: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'userId' | 'isCompleted'>,
-	token: string
+	data: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'userId' | 'isCompleted'>
 ) => {
-	const response = await fetch(`${BACKEND_URL}/tasks/${id}`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
-		},
-		body: JSON.stringify(data),
-	})
-	if (!response.ok) {
-		throw new Error('Failed to create task')
+	try {
+		const response = await api.post(`/tasks/${id}`, data)
+		return response.data
+	} catch (error) {
+		console.error('Failed to create task:', error)
+		throw error
 	}
-	const res = await response.json()
-	return res
 }
 
 export const updateTask = async (
 	id: string,
 	taskId: string,
-	data: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'userId'>,
-	token: string
+	data: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'userId'>
 ) => {
-	const response = await fetch(`${BACKEND_URL}/tasks/${id}/${taskId}`, {
-		method: 'PUT',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
-		},
-		body: JSON.stringify(data),
-	})
-	if (!response.ok) {
-		throw new Error('Failed to update task')
+	try {
+		const response = await api.put(`/tasks/${id}/${taskId}`, data)
+		return response.data
+	} catch (error) {
+		console.error('Failed to update task:', error)
+		throw error
 	}
-	const res = await response.json()
-	return res
 }
 
-export const deleteTask = async (id: string, taskId: string, token: string) => {
-	const response = await fetch(`${BACKEND_URL}/tasks/${id}/${taskId}`, {
-		method: 'DELETE',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
-		},
-	})
-	if (!response.ok) {
-		throw new Error('Failed to delete task')
+export const deleteTask = async (id: string, taskId: string) => {
+	try {
+		const response = await api.delete(`/tasks/${id}/${taskId}`)
+		return response.data
+	} catch (error) {
+		console.error('Failed to delete task:', error)
+		throw error
 	}
-	const res = await response.json()
-
-	return res
 }
 
-export const getTasksLength = async (id: string, token: string) => {
-	const response = await fetch(`${BACKEND_URL}/tasks/length/${id}`, {
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
-		},
-	})
-	if (!response.ok) {
-		throw new Error('Failed to fetch tasks length')
+export const getTasksLength = async (id: string) => {
+	try {
+		const response = await api.get(`/tasks/length/${id}`)
+		return response.data
+	} catch (error) {
+		console.error('Failed to fetch tasks length:', error)
+		throw error
 	}
-	const data = await response.json()
-	return data
 }

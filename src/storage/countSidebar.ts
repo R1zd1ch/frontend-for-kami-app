@@ -7,7 +7,7 @@ interface SidebarState {
 	getItemLength: (label: string) => number | null
 	incrementItemLength: (label: string) => void
 	decrementItemLength: (label: string) => void
-	loadItemsFromBackend: (id: string, token: string) => Promise<void>
+	loadItemsFromBackend: (id: string) => Promise<void>
 }
 
 const useSidebarStore = create<SidebarState>((set, get) => ({
@@ -42,11 +42,10 @@ const useSidebarStore = create<SidebarState>((set, get) => ({
 			},
 		})),
 
-	loadItemsFromBackend: async (id, token) => {
+	loadItemsFromBackend: async id => {
 		try {
-			const data = await getSidebarStatus(id, token)
+			const data = await getSidebarStatus(id)
 
-			// Пример: структура ответа { Задачи: 10, Заметки: 5, ... }
 			set(() => ({
 				itemLengths: data,
 			}))

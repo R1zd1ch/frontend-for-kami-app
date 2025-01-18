@@ -3,7 +3,7 @@ import { Note } from '@/lib/types'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import NoteList from './NoteList'
-import { createNote, deleteNote, updateNote } from '@/api/notes'
+import { createNote, deleteNote, getAllNotes, updateNote } from '@/api/notes'
 import Fuse from 'fuse.js'
 import { Input } from '../ui/input'
 import { Frown, NotebookPen, Search } from 'lucide-react'
@@ -13,15 +13,11 @@ import { toast } from 'sonner'
 
 interface NoteBoardProps {
 	id: string
-	token: string
-	initialNotes: Note[]
 }
 
-const NoteBoard = ({ id, token, initialNotes }: NoteBoardProps) => {
-	const [notes, setNotes] = useState<Note[]>(
-		[...initialNotes].sort((a, b) => Number(b.isPinned) - Number(a.isPinned))
-	)
-	const [renderNotes, setRenderNotes] = useState<Note[]>(notes)
+const NoteBoard = ({ id }: NoteBoardProps) => {
+	const [notes, setNotes] = useState<Note[]>([])
+	const [renderNotes, setRenderNotes] = useState<Note[]>([])
 	const [select, setSelect] = useState('All')
 	const [searchTerm, setSearchTerm] = useState('')
 
@@ -32,6 +28,18 @@ const NoteBoard = ({ id, token, initialNotes }: NoteBoardProps) => {
 		threshold: 0.3,
 	})
 
+	useEffect(() => {
+		const fetchNotes = async () => {
+			const serverNotes = await getAllNotes(id)
+			setNotes(
+				[...serverNotes].sort((a, b) => Number(b.isPinned) - Number(a.isPinned))
+			)
+			setRenderNotes(notes)
+		}
+
+		fetchNotes()
+	}, [])
+
 	const handlePinNote = async (note: Note) => {
 		setNotes(
 			notes
@@ -39,15 +47,10 @@ const NoteBoard = ({ id, token, initialNotes }: NoteBoardProps) => {
 				.sort((a, b) => Number(b.isPinned) - Number(a.isPinned))
 		)
 
-		await updateNote(
-			id,
-			note.id,
-			{
-				...note,
-				isPinned: !note.isPinned,
-			},
-			token
-		)
+		await updateNote(id, note.id, {
+			...note,
+			isPinned: !note.isPinned,
+		})
 		if (!note.isPinned) {
 			toast('Заметка закреплена', {
 				description: 'Заметка успешно закреплена',
@@ -66,7 +69,7 @@ const NoteBoard = ({ id, token, initialNotes }: NoteBoardProps) => {
 	const handleCreateNote = async (
 		note: Omit<Note, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
 	): Promise<void> => {
-		const createdNote = await createNote(id, note, token)
+		const createdNote = await createNote(id, note)
 		setNotes([...notes, createdNote])
 		toast('Заметка создана', {
 			description: 'Заметка успешно создана',
@@ -76,7 +79,7 @@ const NoteBoard = ({ id, token, initialNotes }: NoteBoardProps) => {
 	}
 
 	const handleUpdateNote = async (note: Note): Promise<void> => {
-		const updatedNote = await updateNote(id, note.id, note, token)
+		const updatedNote = await updateNote(id, note.id, note)
 		setNotes(notes.map(n => (n.id === note.id ? updatedNote : n)))
 		toast('Заметка обновлена', {
 			description: 'Заметка успешно обновлена',
@@ -86,7 +89,7 @@ const NoteBoard = ({ id, token, initialNotes }: NoteBoardProps) => {
 
 	const handleDeleteNote = async (noteId: string): Promise<void> => {
 		try {
-			const response = await deleteNote(id, noteId, token)
+			const response = await deleteNote(id, noteId)
 			if (response.status === 200) {
 				console.log('Note deleted successfully')
 			}

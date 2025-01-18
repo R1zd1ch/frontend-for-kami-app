@@ -1,148 +1,51 @@
-import { NextResponse } from 'next/server'
-import { encode, getToken } from 'next-auth/jwt'
-import type { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import jwt from 'jsonwebtoken'
+
+import { refreshSession } from './lib/auth'
 import { cookies } from 'next/headers'
-import { BACKEND_URL } from './lib/constants'
-import { jwtDecode } from 'jwt-decode'
 
-const secret = process.env.NEXTAUTH_SECRET!
-export const SESSION_COOKIE = 'next-auth.session-token'
-export const SESSION_SECURE = process.env.NEXTAUTH_URL?.startsWith('https://')
-export const SESSION_TIMEOUT = 60 * 60 * 24 * 28 // 28 day
+export async function middleware(req: NextRequest) {
+	const cookiesStore = await cookies()
+	const accessToken = req.cookies.get('accessToken')?.value
+	console.log('accessToken', accessToken)
 
-export async function middleware(request: NextRequest) {
-	// Извлекаем токен сессии
-	const token = await getToken({ req: request, secret })
-	const response = NextResponse.next()
+	if (accessToken) {
+		const decoded = jwt.decode(accessToken)
+		console.log('decoded', decoded)
+		if (decoded && typeof decoded === 'object') {
+			const now = Math.floor(Date.now() / 1000)
+			console.log('now', now)
+			console.log('exp', decoded.exp)
 
-	// return response
+			//если токен истекает через время какое-то то
+			if (decoded.exp && decoded.exp - 15 * 60 < now) {
+				const refreshToken = req.cookies.get('refreshToken')?.value
+				console.log('refreshedTokenMiddleWare', refreshToken)
 
-	// if (token) {
-	// 	const currentAccessToken = token.tokens.accessToken
-	// 	const currentRefreshToken = token.tokens.refreshToken
-
-	// 	if (!currentAccessToken || !currentRefreshToken) {
-	// 		return NextResponse.redirect(new URL('/', request.url))
-	// 	}
-	// 	console.log(token)
-	// 	if (new Date().getTime() > token.tokens.exp * 1000) {
-	// 		const refreshedToken = await refreshAccessToken(
-	// 			currentAccessToken,
-	// 			currentRefreshToken
-	// 		)
-
-	// 		if (!refreshedToken) {
-	// 			return NextResponse.redirect(new URL('/', request.url))
-	// 		}
-
-	// 		encode({
-	// 			secret,
-	// 			token: { ...token, tokens: refreshedToken },
-	// 			maxAge: SESSION_TIMEOUT,
-	// 		})
-
-	// 		cookiesStore.set('accessToken', refreshedToken.accessToken, {})
-	// 		cookiesStore.set('refreshToken', refreshedToken.refreshToken, {})
-
-	// 		response = updateCookie(refreshedToken, request, response)
-	// 	}
-
-	// 	return response
-	// }
-
-	// if (token) {
-	// 	const currentAccessToken = token.tokens.accessToken
-	// 	const currentRefreshToken = token.tokens.refreshToken
-
-	// 	if (!currentAccessToken || !currentRefreshToken) {
-	// 		return NextResponse.redirect(new URL('/', request.url))
-	// 	}
-
-	// 	if (new Date().getTime() > token.tokens.exp * 1000) {
-	// 		const refreshedToken = await refreshAccessToken(
-	// 			currentAccessToken,
-	// 			currentRefreshToken
-	// 		)
-
-	// 		if (!refreshedToken) {
-	// 			return NextResponse.redirect(new URL('/', request.url))
-	// 		}
-
-	// 		encode({
-	// 			secret,
-	// 			token: refreshedToken,
-	// 			maxAge: SESSION_TIMEOUT,
-	// 		})
-
-	// 		response = updateCookie(refreshedToken, request, response)
-	// 	}
-
-	// 	return response
-	// }
-
-	if (!token) {
-		// Если токен не найден, перенаправляем на страницу логина
-		return NextResponse.redirect(new URL('/', request.url))
+				if (refreshToken) {
+					const response = await refreshSession()
+					if (response.ok) {
+						const data = await response.json()
+						const res = NextResponse.next()
+						req.cookies.set('accessToken', data.tokens.accessToken)
+						req.cookies.set('refreshToken', data.tokens.refreshToken)
+						cookiesStore.set('accessToken', data.tokens.accessToken)
+						cookiesStore.set('refreshToken', data.tokens.refreshToken)
+						return res
+					}
+				}
+			}
+		}
 	}
 
-	return response
+	if (!accessToken) {
+		req.cookies.delete('accessToken')
+		req.cookies.delete('refreshToken')
+		return NextResponse.redirect(new URL('/auth/signin', req.url))
+	}
+	return NextResponse.next()
 }
+
 export const config = {
-	matcher: ['/main/:path*', '/profile/:path*'],
-}
-
-export function updateCookie(
-	sessionToken: string | null,
-	request: NextRequest,
-	response: NextResponse
-): NextResponse<unknown> {
-	if (sessionToken) {
-		request.cookies.set(SESSION_COOKIE, sessionToken)
-		response = NextResponse.next({
-			request: {
-				headers: request.headers,
-			},
-		})
-		response.cookies.set(SESSION_COOKIE, sessionToken, {
-			httpOnly: true,
-			maxAge: SESSION_TIMEOUT,
-			secure: SESSION_SECURE,
-		})
-	}
-	return response
-}
-
-export async function refreshAccessToken(
-	accessToken: string,
-	refreshToken: string
-) {
-	const res = await fetch(`${BACKEND_URL}/auth/refresh`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-
-		body: JSON.stringify({ refreshToken: refreshToken }),
-	})
-
-	console.log({ refreshToken: refreshToken })
-
-	if (!res.ok) {
-		console.error(await res.text())
-		throw new Error('Failed to refresh access token')
-	}
-
-	console.log('Refreshed')
-
-	const data = await res.json()
-
-	const exp = jwtDecode(data.accessToken).exp
-	console.log(exp)
-
-	console.log(data)
-	return {
-		...data,
-		exp,
-	}
+	matcher: ['/main/:path*', '/main/:path*/:path*'],
 }

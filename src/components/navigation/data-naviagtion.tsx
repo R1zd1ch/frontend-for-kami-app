@@ -17,6 +17,7 @@ import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import NavUser from './nav-user'
 import { JSX } from 'react'
+import { logout } from '@/lib/auth'
 
 const navItems = [
 	{ href: '/main/tasks', icon: ListChecks, label: 'Задачи', badge: null },
@@ -55,7 +56,7 @@ export const menuItems = [
 	{
 		label: 'Logout',
 		Icon: LogOut,
-		onClick: () => signOut(),
+		onClick: async () => await logout(),
 		isSeparator: true,
 	},
 ]
