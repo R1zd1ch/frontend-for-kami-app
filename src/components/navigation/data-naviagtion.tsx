@@ -13,7 +13,6 @@ import {
 	TvMinimalPlay,
 	User,
 } from 'lucide-react'
-import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import NavUser from './nav-user'
 import { JSX } from 'react'
@@ -22,8 +21,8 @@ import { logout } from '@/lib/auth'
 const navItems = [
 	{ href: '/main/tasks', icon: ListChecks, label: 'Задачи', badge: null },
 	{ href: '/main/notes', icon: NotebookPen, label: 'Заметки', badge: null },
-	{ href: '/main/mood', icon: Cat, label: 'Настроение', badge: 6 },
-	{ href: '#', icon: Book, label: 'Книги', badge: null },
+	{ href: '/main/mood', icon: Cat, label: 'Настроение', badge: null },
+	{ href: '/main/books', icon: Book, label: 'Книги', badge: null },
 
 	{ href: '#', icon: Gift, label: 'Wish Лист', badge: null },
 	{ href: '#', icon: Mail, label: 'Сообщения', badge: null },

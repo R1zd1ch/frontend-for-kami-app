@@ -30,7 +30,7 @@ import TaskItem from './TaskItem'
 import { arrayMove } from '@dnd-kit/sortable'
 import useSidebarStore from '@/storage/countSidebar'
 import { toast } from 'sonner'
-const TaskBoard = ({ token, id }: { id: string; token: string }) => {
+const TaskBoard = ({ id }: { id: string }) => {
 	const [tasks, setTasks] = useState<Task[]>([])
 	const [activeTask, setActiveTask] = useState<Task | null>(null)
 	const [isClient, setIsClient] = useState(false)
@@ -83,20 +83,15 @@ const TaskBoard = ({ token, id }: { id: string; token: string }) => {
 		if (!activeTask) return
 
 		const update = async () =>
-			await updateTask(
-				id,
-				activeTask.id,
-				{
-					title: activeTask.title,
-					selectDay: activeTask.selectDay,
-					description: activeTask.description,
-					isCompleted: activeTask.isCompleted,
-					subject: activeTask.subject,
-					dueDate: activeTask.dueDate,
-					importance: activeTask.importance,
-				},
-				token
-			)
+			await updateTask(id, activeTask.id, {
+				title: activeTask.title,
+				selectDay: activeTask.selectDay,
+				description: activeTask.description,
+				isCompleted: activeTask.isCompleted,
+				subject: activeTask.subject,
+				dueDate: activeTask.dueDate,
+				importance: activeTask.importance,
+			})
 
 		if (activeTask?.selectDay === 'Выполненные задачи') {
 			if (activeTask.isCompleted) {
@@ -173,7 +168,7 @@ const TaskBoard = ({ token, id }: { id: string; token: string }) => {
 			'id' | 'createdAt' | 'updatedAt' | 'userId' | 'isCompleted'
 		>
 	): Promise<void> => {
-		const createdTask = await createTask(id, newTask, token)
+		const createdTask = await createTask(id, newTask)
 		toast('Задача создана', {
 			description: 'Задача успешно создана',
 			duration: 2000,
@@ -210,16 +205,17 @@ const TaskBoard = ({ token, id }: { id: string; token: string }) => {
 	}
 
 	const handleDeleteTask = async (taskId: string): Promise<void> => {
-		await deleteTask(id, taskId, token)
+		await deleteTask(id, taskId)
 		setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId))
 		const numeredTaskId = parseInt(taskId, 10)
-		toast('Задача обновлена', {
-			description: 'Задача успешно обновлена',
+		toast('Задача удалена', {
+			description: 'Задача успешно удалена',
 			duration: 2000,
 		})
-		if (!tasks[numeredTaskId].isCompleted) {
-			decrementItemLength('Задачи')
-		}
+		decrementItemLength('Задачи')
+		// if (!tasks[numeredTaskId].isCompleted) {
+		// 	decrementItemLength('Задачи')
+		// }
 	}
 
 	return (

@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
 			},
 		]
 	},
+	images: {
+		domains: ['books.google.com', 'example.com', 'res.cloudinary.com'],
+	},
 }
 
 export default nextConfig

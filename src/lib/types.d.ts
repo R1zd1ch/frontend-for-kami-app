@@ -49,11 +49,13 @@ export interface Note {
 }
 
 export interface Mood {
+	[x: string]: string | number | Date
 	id: string
 	date: Date
 	moodLevel: number
 	note?: string
 	createdAt: Date
+	userId: string
 }
 
 export interface MoodSummary {
@@ -66,4 +68,69 @@ export interface MoodSummary {
 	averageDay?: number
 	year?: number
 	month?: number
+}
+
+export type DayAverageMood = {
+	date: string
+	average: number
+}
+
+export type WeekAverageMood = {
+	start: Date
+	end: Date
+	days: DayAverageMood[]
+}
+
+export type MonthAverageMood = {
+	start: Date
+	end: Date
+	days: DayAverageMood[]
+}
+
+export type YearAverageMood = {
+	start: Date
+	end: Date
+	days: DayAverageMood[]
+}
+
+export type BookStatus = 'to-read' | 'reading' | 'completed'
+
+export interface Book {
+	externalId: string
+	id: string
+	status: BookStatus
+	progress: number
+	startDate?: string
+	endDate?: string
+	rating?: number
+	review?: string
+	isFavourite: boolean
+
+	title: string
+	authors: string[]
+	coverUrl?: string
+	description?: string
+	publishedDate?: string
+	pages: string
+	categories?: string[]
+	language?: string
+	isbn?: string
+
+	userId: string
+	createdAt: Date
+	updatedAt: Date
+}
+
+export interface SearchResult {
+	id: string
+	externalId: string
+	title: string
+	authors: string[]
+	coverUrl?: string
+	description?: string
+	publishedDate?: string
+	isbn?: string
+	pages?: string
+	categories?: string[]
+	language?: string
 }
