@@ -8,6 +8,7 @@ import {
 	isValid,
 	addWeeks,
 	subWeeks,
+	addDays,
 } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import {
@@ -44,6 +45,10 @@ const WeeklyChart = ({
 		fetchData()
 	}, [currentDate, refreshKey])
 
+	useEffect(() => {
+		console.log(chartData, 'CHART DATA')
+	}, [chartData])
+
 	const fetchData = async () => {
 		setLoading(true)
 
@@ -52,9 +57,11 @@ const WeeklyChart = ({
 			'yyyy-MM-dd'
 		)
 		const end = format(
-			endOfWeek(currentDate, { weekStartsOn: 2 }),
+			addDays(endOfWeek(currentDate, { weekStartsOn: 1 }), 1),
 			'yyyy-MM-dd'
 		)
+
+		console.log(start, end)
 
 		try {
 			const data = await getAverageMoodByInterval(id, start, end, 'week')
@@ -64,6 +71,7 @@ const WeeklyChart = ({
 					date: item.date && isValid(parseISO(item.date)) ? item.date : null,
 				})) || []
 			setChartData(validData.filter((item: any) => item.date !== null))
+			console.log(validData, 'VALID DATA')
 		} catch (error) {
 			console.error('Error fetching data:', error)
 			setChartData([])

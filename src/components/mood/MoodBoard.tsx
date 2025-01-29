@@ -118,16 +118,6 @@ const MoodBoard = ({ id }: MoodBoardProps) => {
 		return responseDaily
 	}
 
-	const handleGetMoodsByHour = async (
-		startHour: string,
-		endHour: string
-	): Promise<Mood[]> => {
-		console.log(startHour, endHour)
-		const responseDaily = await getMoodsByDay(id, startHour, endHour)
-		console.log(responseDaily)
-		return responseDaily
-	}
-
 	const handleCreateMood = async (
 		moodLevel: number,
 		note: string,
@@ -213,7 +203,6 @@ const MoodBoard = ({ id }: MoodBoardProps) => {
 							averageMonthlyMood={averagesMonthly}
 							averageYearlyMood={averagesYearly}
 							handleGetMoodsByDay={handleGetMoodsByDay}
-							handleGetMoodsByHour={handleGetMoodsByHour}
 							refreshData={fetchMoodInterval}
 						/>
 					</CardContent>

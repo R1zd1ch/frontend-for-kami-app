@@ -18,6 +18,7 @@ import { searchBooks } from '@/api/books'
 import Fuse from 'fuse.js'
 import { Book } from '@/lib/types'
 import { BookList } from './BookList'
+import useSidebarStore from '@/storage/countSidebar'
 
 interface BooksBoardProps {
 	id: string
@@ -26,7 +27,7 @@ interface BooksBoardProps {
 type TabType = 'catalog' | 'all' | 'favourites' | 'read'
 
 const BooksBoard = ({ id }: BooksBoardProps) => {
-	const { books, loading, error, fetchBooks } = useBookStore()
+	const { books, error, fetchBooks } = useBookStore()
 	const [loadingCatalog, setLoadingCatalog] = useState(false)
 	const [catalogError, setCatalogError] = useState<string | null>(null)
 	const [activeTab, setActiveTab] = useState<TabType>('catalog')
@@ -36,6 +37,8 @@ const BooksBoard = ({ id }: BooksBoardProps) => {
 
 	const [userBooksSearchTerm, setUserBooksSearchTerm] = useState('')
 	const [userBooksResults, setUserBooksResults] = useState<Book[]>([])
+	const { getItemLength, incrementItemLength, decrementItemLength } =
+		useSidebarStore()
 
 	const fuse = useMemo(
 		() =>
@@ -46,6 +49,23 @@ const BooksBoard = ({ id }: BooksBoardProps) => {
 			}),
 		[books]
 	)
+
+	useEffect(() => {
+		const lengthSidebarState = getItemLength('Книги')
+		const filteredBooks = books.filter(
+			book =>
+				book.status !== 'completed' && !book.isFavourite && book.progress > 0
+		)
+		console.log(filteredBooks, lengthSidebarState)
+		if (lengthSidebarState) {
+			if (filteredBooks.length > lengthSidebarState) {
+				incrementItemLength('Книги')
+			}
+			if (filteredBooks.length < lengthSidebarState) {
+				decrementItemLength('Книги')
+			}
+		}
+	}, [books])
 
 	const filteredBooks = useMemo(() => {
 		switch (activeTab) {
@@ -201,6 +221,7 @@ const BooksBoard = ({ id }: BooksBoardProps) => {
 							books={catalogResults}
 							isCatalog={true}
 							userId={id}
+							isFavouritePage={false}
 							catalogSearchTerm={catalogSearchTerm}
 						/>
 					)}
@@ -224,8 +245,10 @@ const BooksBoard = ({ id }: BooksBoardProps) => {
 							<BookList
 								books={getDisplayBooks()}
 								isCatalog={false}
+								isFavouritePage={tab === 'favourites'}
 								userId={id}
 								userSearchTerm={userBooksSearchTerm}
+
 								// userId={''}
 							/>
 						)}

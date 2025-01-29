@@ -10,6 +10,7 @@ const serverApi = axios.create({
 	headers: {
 		'Content-Type': 'application/json',
 	},
+	withCredentials: true,
 })
 
 // Request interceptor
@@ -69,5 +70,26 @@ serverApi.interceptors.response.use(
 		return Promise.reject(error)
 	}
 )
+
+export const uploadImageAction = async (formData: FormData) => {
+	try {
+		const token = await getLatestAccessToken()
+
+		const response = await axios.post(
+			`${BACKEND_URL}/upload-image/gifts`,
+			formData,
+			{
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		)
+
+		return response.data
+	} catch (error) {
+		console.error('Upload failed:', error)
+		throw new Error('Failed to upload image')
+	}
+}
 
 export default serverApi

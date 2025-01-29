@@ -100,6 +100,7 @@ const MoodDayModalList = ({
 		if (moods) {
 			setMoods([...moods].filter(mood => mood.id !== moodId))
 		}
+
 		await refreshData()
 	}
 

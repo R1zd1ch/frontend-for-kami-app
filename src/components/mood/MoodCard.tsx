@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Mood } from '@/lib/types'
 import { Trash } from 'lucide-react'
 import { format } from 'date-fns'
+import { Button } from '../ui/button'
 
 const getMoodEmoji = (moodLevel: number): string => {
 	if (moodLevel <= 2) return '😢'
@@ -48,6 +49,7 @@ const MoodCard = ({
 	const [isEditingMood, setIsEditingMood] = useState(false)
 	const [currentNote, setCurrentNote] = useState(note)
 	const [currentMoodLevel, setCurrentMoodLevel] = useState(moodLevel)
+	const [isDeleting, setIsDeleting] = useState(false)
 
 	const handleUpdate = async () => {
 		await updateMood(userId, id, {
@@ -68,6 +70,15 @@ const MoodCard = ({
 		}
 	}
 
+	const handleMoodDelete = async () => {
+		setIsDeleting(true)
+		try {
+			await handleDelete(id)
+		} finally {
+			setIsDeleting(false)
+		}
+	}
+
 	const handleMoodKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === 'Enter') {
 			setIsEditingMood(false)
@@ -80,15 +91,22 @@ const MoodCard = ({
 
 	return (
 		<Card className='w-full max-w-md p-4'>
-			<CardHeader className='p-0 pb-2 flex flex-row justify-between items-end'>
+			<CardHeader className='p-0 pb-2 flex flex-row justify-between items-center'>
 				<CardTitle className='flex justify-between items-center'>
 					<span>{formattedDate}</span>
 				</CardTitle>
 				<div className='flex flex-row gap-2 items-center'>
-					<Trash
-						className='cursor-pointer hover:text-destructive'
-						onClick={() => handleDelete(id)}
-					></Trash>
+					<Button
+						size={'sm'}
+						variant={'ghost'}
+						onClick={handleMoodDelete}
+						disabled={isDeleting}
+					>
+						<Trash
+							className='cursor-pointer hover:text-destructive'
+							style={{ width: '20px', height: '20px' }}
+						></Trash>
+					</Button>
 				</div>
 			</CardHeader>
 			<CardContent className='p-0 flex flex-row justify-between'>

@@ -15,6 +15,8 @@ const useSidebarStore = create<SidebarState>((set, get) => ({
 		Задачи: 0,
 		Заметки: 0,
 		Настроение: 0,
+		Книги: 0,
+		'Wish лист': 0,
 	},
 
 	setItemLength: (label, length) =>

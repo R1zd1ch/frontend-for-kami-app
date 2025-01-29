@@ -24,7 +24,7 @@ const navItems = [
 	{ href: '/main/mood', icon: Cat, label: 'Настроение', badge: null },
 	{ href: '/main/books', icon: Book, label: 'Книги', badge: null },
 
-	{ href: '#', icon: Gift, label: 'Wish Лист', badge: null },
+	{ href: '/main/gifts', icon: Gift, label: 'Wish Лист', badge: null },
 	{ href: '#', icon: Mail, label: 'Сообщения', badge: null },
 	{ href: '#', icon: MessageSquareDot, label: 'Уведомления', badge: null },
 	{ href: '#', icon: TvMinimalPlay, label: 'Планы к просмотру', badge: null },

@@ -1,22 +1,17 @@
 import { fetchProfile } from '@/api/fetchprofile'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import ProfileHeader from '@/components/profile/ProfileHeader'
 import { UserProfile } from '@/lib/types'
 export const dynamic = 'force-dynamic'
-
-import { getServerSession } from 'next-auth'
+import getSession from '@/lib/getSession'
 
 export default async function Layout({
 	children,
-	params,
 }: {
 	children: React.ReactNode
-	params: { id: string }
 }) {
-	const session = await getServerSession(authOptions)
-	const token = session?.tokens.accessToken
-	const { id } = await params
-	const profile: UserProfile = await fetchProfile(id, (token as string) || '')
+	const session = await getSession()
+	const id = session?.user.id
+	const profile: UserProfile = await fetchProfile(id || '')
 
 	return (
 		<div className='w-full h-[95vh]'>

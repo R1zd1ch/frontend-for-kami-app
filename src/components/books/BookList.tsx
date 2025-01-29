@@ -9,10 +9,12 @@ export function BookList({
 	userId,
 	catalogSearchTerm = '',
 	userSearchTerm = '',
+	isFavouritePage,
 }: {
 	books: Book[]
 	isCatalog: boolean
 	userId: string
+	isFavouritePage: boolean
 	catalogSearchTerm?: string
 	userSearchTerm?: string
 }) {
@@ -64,9 +66,10 @@ export function BookList({
 						</div>
 				  )}
 
-			{books.map((book: Book, index) => (
+			{books.map((book: Book) => (
 				<BookCard
-					key={index}
+					isFavouritePage={isFavouritePage}
+					key={book.id || book.externalId}
 					book={book}
 					isCatalog={isCatalog}
 					userId={userId}

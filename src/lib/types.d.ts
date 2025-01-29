@@ -134,3 +134,57 @@ export interface SearchResult {
 	categories?: string[]
 	language?: string
 }
+
+export interface Gift {
+	id: string
+	name: string
+	description: string
+	category: string
+	price: number
+	priority: string
+	link?: string
+	image?: string
+	isCompleted?: boolean
+	received?: Date
+	createdAt: Date
+	userId: string
+}
+
+export interface UpdateGift {
+	name?: string
+	description?: string
+	category?: string
+	price?: number
+	priority?: string
+	link?: string
+	image?: string
+	received?: Date
+	isCompleted?: boolean
+}
+
+export interface CategoriesGift {
+	items: {
+		all: {
+			[key: string]: number
+		}
+		completed: {
+			[key: string]: number
+		}
+		notCompleted: {
+			[key: string]: number
+		}
+	}
+	all: number
+}
+
+export interface GiftAnalytics {
+	all: {
+		[key: string]: number
+	}
+	completed: {
+		[key: string]: number
+	}
+	notCompleted: {
+		[key: string]: number
+	}
+}

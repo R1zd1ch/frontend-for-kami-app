@@ -25,7 +25,6 @@ interface SelectPixelsManagerProps {
 		endCurrentDay: string
 	) => Promise<Mood[]>
 	refreshData: () => Promise<void>
-	handleGetMoodsByHour: (startHour: string, endHour: string) => Promise<Mood[]>
 }
 
 const SelectPixelsManager = ({

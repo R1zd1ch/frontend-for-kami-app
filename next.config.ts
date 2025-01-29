@@ -20,7 +20,14 @@ const nextConfig: NextConfig = {
 		]
 	},
 	images: {
-		domains: ['books.google.com', 'example.com', 'res.cloudinary.com'],
+		domains: [
+			'books.google.com',
+			'example.com',
+			'res.cloudinary.com',
+			'via.placeholder.com',
+			'picsum.photos',
+			'i.ibb.co',
+		],
 	},
 }
 

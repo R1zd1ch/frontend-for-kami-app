@@ -13,6 +13,7 @@ import { Button } from '../ui/button'
 import { useBookStore } from '@/storage/bookStore'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Input } from '../ui/input'
+import BookMoreInformation from './BookMoreInformation'
 
 const checkBookStatus = (book: Book) => {
 	return (
@@ -26,10 +27,12 @@ export const BookCard = ({
 	book,
 	isCatalog,
 	userId,
+	isFavouritePage,
 }: {
 	book: Book
 	isCatalog: boolean
 	userId: string
+	isFavouritePage: boolean
 }) => {
 	const {
 		toggleFavourite,
@@ -41,9 +44,7 @@ export const BookCard = ({
 	} = useBookStore()
 
 	const [disabledFavourite, setDisabledFavourite] = useState(false)
-
 	const [disabledUpdate, setDisabledUpdate] = useState(false)
-
 	const [progress, setProgress] = useState(book.progress)
 	const timeoutId = useRef<NodeJS.Timeout | null>(null)
 	const isMounted = useRef(true)
@@ -200,7 +201,9 @@ export const BookCard = ({
 						src={book.coverUrl || '/placeholder.png'}
 						alt={book.title}
 						fill
-						className='object-cover transition-transform duration-300 group-hover:scale-105'
+						loading={isCatalog ? 'lazy' : 'eager'}
+						quality={100}
+						className='object-cover transition-transform duration-300 group-hover:scale-105 progressive'
 						style={{
 							filter: 'contrast(1.05) saturate(1.1) brightness(1.05)',
 						}}
@@ -264,11 +267,12 @@ export const BookCard = ({
 					</div>
 
 					<div>
-						<Button size='sm'>Подробнее</Button>
+						{/* <Button size='sm'>Подробнее</Button> */}
+						<BookMoreInformation book={book}></BookMoreInformation>
 					</div>
 				</div>
 
-				{!isCatalog && (
+				{!isCatalog && !isFavouritePage && (
 					<div className='flex flex-row justify-between w-full items-center'>
 						<div className='text-sm'>
 							<p className=''>Прогресс:</p>

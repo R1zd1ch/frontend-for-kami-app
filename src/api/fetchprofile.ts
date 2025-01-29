@@ -1,19 +1,7 @@
-import { BACKEND_URL } from '@/lib/constants'
 import { UserProfile } from '@/lib/types'
+import serverApi from './serverApi'
 
-export async function fetchProfile(
-	id: string,
-	token: string
-): Promise<UserProfile> {
-	const response = await fetch(`${BACKEND_URL}/profile/${id}`, {
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
-		},
-	})
-	if (!response.ok) {
-		throw new Error('Failed to fetch profile')
-	}
-	const data = await response.json()
-	return data
+export async function fetchProfile(id: string): Promise<UserProfile> {
+	const response = await serverApi.get(`/profile/${id}`)
+	return response.data
 }
