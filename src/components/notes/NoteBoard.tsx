@@ -91,7 +91,7 @@ const NoteBoard = ({ id }: NoteBoardProps) => {
 		try {
 			const response = await deleteNote(id, noteId)
 			if (response.status === 200) {
-				console.log('Note deleted successfully')
+				// console.log('Note deleted successfully')
 			}
 		} catch (error) {
 			console.error('Error deleting note:', error)

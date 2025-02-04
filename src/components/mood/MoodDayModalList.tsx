@@ -56,7 +56,7 @@ const MoodDayModalList = ({
 					format(addDays(endCurrentDay, 1), 'yyyy-MM-dd')
 				)
 
-				console.log(response)
+				// console.log(response)
 				const filteredMoods = response?.filter((mood: Mood) => {
 					const date = new Date(mood.date)
 					return date.getDay() === selectedDay.getDay()

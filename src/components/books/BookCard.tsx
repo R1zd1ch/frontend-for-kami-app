@@ -111,7 +111,7 @@ export const BookCard = ({
 					const bookToDeletee = books.find(
 						item => item.externalId === book.externalId
 					)
-					console.log(bookToDeletee)
+					// console.log(bookToDeletee)
 					await deleteBook(userId || '', bookToDeletee?.id || '')
 				}
 				if (!isCatalog) {

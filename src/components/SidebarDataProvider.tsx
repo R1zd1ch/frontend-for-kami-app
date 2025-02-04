@@ -13,7 +13,7 @@ const SidebarDataProvider = ({
 	const { loadItemsFromBackend } = useSidebarStore()
 
 	useEffect(() => {
-		console.log(session, 'HOHOHO')
+		// console.log(session, 'HOHOHO')
 		if (session) loadItemsFromBackend(session.user.id)
 	}, [session])
 

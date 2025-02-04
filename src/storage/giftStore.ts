@@ -98,11 +98,11 @@ export const useGiftStore = create<GiftStoreState & GiftStoreActions>(
 				error: null,
 			}))
 
-			console.log(tempGift)
+			// console.log(tempGift)
 
 			try {
 				const createdGift = await apiCreateGift(userId, newGift as Gift)
-				console.log(createdGift)
+				// console.log(createdGift)
 				set(state => ({
 					gifts: state.gifts.map(gift =>
 						gift.id === tempId ? createdGift : gift
@@ -123,7 +123,7 @@ export const useGiftStore = create<GiftStoreState & GiftStoreActions>(
 
 		updateGift: async (userId, giftId, updates) => {
 			const originalGifts = get().gifts
-			console.log(updates)
+			// console.log(updates)
 
 			set(state => ({
 				gifts: state.gifts.map(gift =>
@@ -144,7 +144,7 @@ export const useGiftStore = create<GiftStoreState & GiftStoreActions>(
 					image: updates.image,
 					price: updates.price,
 				})
-				console.log(updatedGift)
+				// console.log(updatedGift)
 				return updatedGift
 			} catch (error) {
 				set({ gifts: originalGifts })

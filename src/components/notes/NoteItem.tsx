@@ -44,7 +44,7 @@ const NoteItem = ({
 	const day = format(note.createdAt, 'd')
 	const formattedDay = addDaySuffix(Number(day))
 	const formattedTags = note.tags?.split(',').map(tag => `#${tag}`)
-	console.log(formattedTags)
+	// console.log(formattedTags)
 	return (
 		<Card className='p-4 shadow-md hover:shadow-lg'>
 			<div className='flex flex-row justify-between'>

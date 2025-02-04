@@ -60,14 +60,14 @@ const WeekPixels: React.FC<WeekPixelsProps> = ({
 		setWeekDays(days)
 	}, [currentDate])
 
-	console.log(
-		'weekDays',
-		weekDays,
-		'today',
-		currentDate,
-		'averageWeeklyMood',
-		averageWeeklyMood
-	)
+	// console.log(
+	// 	'weekDays',
+	// 	weekDays,
+	// 	'today',
+	// 	currentDate,
+	// 	'averageWeeklyMood',
+	// 	averageWeeklyMood
+	// )
 
 	// Создание мапы для настроений по дням (в UTC)
 	const moodMap = useMemo(() => {
@@ -86,7 +86,7 @@ const WeekPixels: React.FC<WeekPixelsProps> = ({
 
 		return map
 	}, [averageWeeklyMood])
-	console.log('weekMap', moodMap)
+	// console.log('weekMap', moodMap)
 
 	// Функция для получения цвета в зависимости от настроения
 	const getMoodColor = (mood: number | null | undefined) => {
@@ -169,7 +169,7 @@ const WeekPixels: React.FC<WeekPixelsProps> = ({
 					))}
 					{weekDays.map((day, index) => {
 						const dateKey = day.toISOString().split('T')[0] // Используем ISO строку для UTC
-						console.log('dateKey', dateKey)
+						// console.log('dateKey', dateKey)
 						const mood = moodMap.get(dateKey)
 						const moodColor = getMoodColor(mood)
 

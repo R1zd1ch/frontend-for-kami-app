@@ -66,7 +66,7 @@ const GiftCard = ({ gift, viewCurrency }: GiftCardProps) => {
 		try {
 			await deleteGift(gift.userId, gift.id)
 		} catch (error) {
-			console.log(error)
+			// console.log(error)
 		} finally {
 			setIsDeleting(false)
 		}
@@ -81,7 +81,7 @@ const GiftCard = ({ gift, viewCurrency }: GiftCardProps) => {
 				received: new Date(),
 			})
 		} catch (error) {
-			console.log(error)
+			// console.log(error)
 		} finally {
 			setIsReceiving(false)
 		}
@@ -263,10 +263,9 @@ const GiftCard = ({ gift, viewCurrency }: GiftCardProps) => {
 								<Button
 									variant='ghost'
 									size='sm'
-									className='gap-1 opacity-0 cursor-default'
+									className='gap-1 cursor-default'
 								>
-									Ссылка
-									<ArrowUpRight className='h-4 w-4' />
+									Ссылки нет
 								</Button>
 							)}
 						</CardFooter>

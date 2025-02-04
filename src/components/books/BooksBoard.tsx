@@ -56,7 +56,7 @@ const BooksBoard = ({ id }: BooksBoardProps) => {
 			book =>
 				book.status !== 'completed' && !book.isFavourite && book.progress > 0
 		)
-		console.log(filteredBooks, lengthSidebarState)
+		// console.log(filteredBooks, lengthSidebarState)
 		if (lengthSidebarState) {
 			if (filteredBooks.length > lengthSidebarState) {
 				incrementItemLength('Книги')
@@ -92,7 +92,7 @@ const BooksBoard = ({ id }: BooksBoardProps) => {
 					const results = await searchBooks(term)
 					setCatalogResults(results as Book[])
 				} catch (error) {
-					console.log(error)
+					// console.log(error)
 					setCatalogError('Something went wrong')
 				} finally {
 					setLoadingCatalog(false)

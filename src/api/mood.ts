@@ -195,6 +195,6 @@ export async function getRecentUpdatedMoods(id: string): Promise<Mood[]> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getRecentMoods(id: string): Promise<any> {
 	const response = await serverApi.get(`/mood/recent/${id}`)
-	console.log('recent', response.data)
+	// console.log('recent', response.data)
 	return response.data
 }

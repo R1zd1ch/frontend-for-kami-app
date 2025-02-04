@@ -38,7 +38,7 @@ export async function DELETE() {
 // Получение токенов
 export async function GET(request: NextRequest) {
 	const cookieStore = await cookies()
-	console.log('from route', cookieStore.getAll(), request.cookies.getAll())
+	// console.log('from route', cookieStore.getAll(), request.cookies.getAll())
 	const accessToken = cookieStore.get('accessToken')?.value
 	const refreshToken = cookieStore.get('refreshToken')?.value
 

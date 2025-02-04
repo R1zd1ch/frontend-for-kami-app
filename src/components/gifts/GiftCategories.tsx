@@ -80,7 +80,7 @@ const CategoryCard = ({
 	categoryValue: number
 	all: number
 }) => {
-	console.log(category)
+	// console.log(category)
 	return (
 		<Card className='p-4'>
 			<CardHeader className='p-0 pb-2'>

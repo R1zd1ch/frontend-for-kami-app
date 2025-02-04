@@ -35,7 +35,7 @@ const SignUpForm = ({}) => {
 
 	const onSubmit = async (data: z.infer<typeof SignUpSchema>) => {
 		setLoading(true)
-		console.log(data)
+		// console.log(data)
 		const res = await fetch(`${BACKEND_URL}/auth/signup`, {
 			method: 'POST',
 			mode: 'cors',
@@ -49,7 +49,7 @@ const SignUpForm = ({}) => {
 			}),
 		})
 		const result = await res.json()
-		console.log(result)
+		// console.log(result)
 		setLoading(false)
 
 		signIn('credentials', {
@@ -60,7 +60,7 @@ const SignUpForm = ({}) => {
 		})
 
 		if (result?.error) {
-			console.log(result.error)
+			// console.log(result.error)
 		}
 	}
 

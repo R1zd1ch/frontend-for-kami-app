@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 		secure: false,
 	})
 
-	console.log('Cookies set:', response.cookies.getAll())
+	// console.log('Cookies set:', response.cookies.getAll())
 
 	return response
 }

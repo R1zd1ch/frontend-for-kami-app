@@ -122,7 +122,7 @@ export default function GiftAddModal({
 		e.preventDefault()
 		if (!validateForm()) return
 
-		console.log(formData, selectedFile)
+		// console.log(formData, selectedFile)
 
 		try {
 			setIsLoading(true)

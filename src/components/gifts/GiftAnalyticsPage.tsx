@@ -17,7 +17,7 @@ const GiftAnalyticsPage = ({ viewCurrency }: { viewCurrency: string }) => {
 	}
 
 	if (loading) return <div>Loading...</div>
-	console.log(analytics)
+	// console.log(analytics)
 
 	return (
 		<div className='flex flex-col gap-10'>

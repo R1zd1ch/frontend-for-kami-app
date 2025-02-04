@@ -42,7 +42,7 @@ export default function Sidebar({
 	// 	[key: string]: number | string
 	// }
 }) {
-	console.log(user)
+	// console.log(user)
 	const { itemLengths } = useSidebarStore()
 	const dataForBadge = itemLengths
 

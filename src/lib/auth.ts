@@ -6,6 +6,7 @@ import { BACKEND_URL } from './constants'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import jwt from 'jsonwebtoken'
+
 // import api from './interceptorApi'
 
 export async function login(username: string, password: string) {
@@ -27,14 +28,17 @@ export async function refreshSession() {
 
 	const cookiesStore = await cookies()
 	const now = Date.now()
-	const refreshTime = 10 * 1000 // Интервал перед истечением токена для его обновления
+	// const refreshTime = 10 * 1000 // Интервал перед истечением токена для его обновления
 	const accessToken = cookiesStore.get('accessToken')?.value
 
 	if (accessToken) {
 		const decoded = jwt.decode(accessToken)
 		if (decoded && typeof decoded === 'object' && decoded.exp) {
 			const timeToExpire = decoded.exp * 1000 // exp хранится в секундах, переводим в миллисекунды
-			if (now < timeToExpire - refreshTime) {
+
+			//Строка для обновления токена
+			// if (now < timeToExpire - refreshTime) {
+			if (now < timeToExpire) {
 				console.log('Skipping token refresh - token is still valid')
 				return {
 					accessToken,
@@ -74,7 +78,6 @@ export async function refreshSession() {
 	} catch (error) {
 		console.error('Failed to refresh token:', error)
 
-		// Логаут в случае ошибки обновления
 		await logout()
 		throw error
 	}

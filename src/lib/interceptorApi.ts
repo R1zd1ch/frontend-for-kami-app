@@ -13,7 +13,7 @@ const api = axios.create({
 // Интерцептор для запросов
 api.interceptors.request.use(async config => {
 	const token = getCookie('accessToken')
-	console.log('token bebra', token)
+	// console.log('token bebra', token)
 
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`

@@ -61,7 +61,7 @@ const YearGrid: React.FC<YearPixelsProps> = ({
 		if (averageYearlyMood.length > 0) {
 			averageYearlyMood[0].days.forEach((day: DayAverageMood) => {
 				if (day.date === null) return
-				console.log(day)
+				// console.log(day)
 
 				const localDateKey = formatToLocalDate(day.date)
 				map.set(localDateKey, day.average)

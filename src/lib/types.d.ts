@@ -188,3 +188,32 @@ export interface GiftAnalytics {
 		[key: string]: number
 	}
 }
+
+export type Message = {
+	id: string
+	content: string
+	createdAt: Date
+	senderId: string
+	chatId: string
+	sender: {
+		id: string
+		username: string
+		avatarUrl?: string
+	}
+}
+
+export type Chat = {
+	id: string
+	type: 'private' | 'group'
+	name?: string
+	messages: Message[]
+	participants: {
+		user: {
+			id: string
+			username: string
+			avatarUrl?: string
+			firstName?: string
+			lastName?: string
+		}
+	}[]
+}

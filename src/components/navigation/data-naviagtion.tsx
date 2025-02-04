@@ -25,7 +25,7 @@ const navItems = [
 	{ href: '/main/books', icon: Book, label: 'Книги', badge: null },
 
 	{ href: '/main/gifts', icon: Gift, label: 'Wish Лист', badge: null },
-	{ href: '#', icon: Mail, label: 'Сообщения', badge: null },
+	{ href: '/main/messages', icon: Mail, label: 'Сообщения', badge: null },
 	{ href: '#', icon: MessageSquareDot, label: 'Уведомления', badge: null },
 	{ href: '#', icon: TvMinimalPlay, label: 'Планы к просмотру', badge: null },
 ]
@@ -43,13 +43,13 @@ export const menuItems = [
 	{
 		label: 'Profile',
 		Icon: User,
-		onClick: () => console.log('Profile clicked'),
+		// onClick: () => console.log('Profile clicked'),
 		href: '/profile',
 	},
 	{
 		label: 'Settings',
 		Icon: Settings,
-		onClick: () => console.log('Settings clicked'),
+		// onClick: () => console.log('Settings clicked'),
 		href: '/profile/settings',
 	},
 	{

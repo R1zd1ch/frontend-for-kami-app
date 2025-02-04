@@ -46,7 +46,7 @@ const WeeklyChart = ({
 	}, [currentDate, refreshKey])
 
 	useEffect(() => {
-		console.log(chartData, 'CHART DATA')
+		// console.log(chartData, 'CHART DATA')
 	}, [chartData])
 
 	const fetchData = async () => {
@@ -61,7 +61,7 @@ const WeeklyChart = ({
 			'yyyy-MM-dd'
 		)
 
-		console.log(start, end)
+		// console.log(start, end)
 
 		try {
 			const data = await getAverageMoodByInterval(id, start, end, 'week')
@@ -71,7 +71,7 @@ const WeeklyChart = ({
 					date: item.date && isValid(parseISO(item.date)) ? item.date : null,
 				})) || []
 			setChartData(validData.filter((item: any) => item.date !== null))
-			console.log(validData, 'VALID DATA')
+			// console.log(validData, 'VALID DATA')
 		} catch (error) {
 			console.error('Error fetching data:', error)
 			setChartData([])

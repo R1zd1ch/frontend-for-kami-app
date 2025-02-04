@@ -69,7 +69,7 @@ const MoodBoard = ({ id }: MoodBoardProps) => {
 					'month'
 				)
 				setAveragesMonthly(responseMonthly)
-				console.log(responseMonthly)
+				// console.log(responseMonthly)
 				break
 			case 'Week':
 				const weekStart = startOfWeek(now, { weekStartsOn: 1 })
@@ -84,7 +84,7 @@ const MoodBoard = ({ id }: MoodBoardProps) => {
 					endCurrentWeek,
 					'week'
 				)
-				console.log('week', responseWeekly)
+				// console.log('week', responseWeekly)
 				setAveragesWeekly(responseWeekly)
 				break
 
@@ -108,13 +108,13 @@ const MoodBoard = ({ id }: MoodBoardProps) => {
 		startCurrentDay: string,
 		endCurrentDay: string
 	): Promise<Mood[]> => {
-		console.log(startCurrentDay, endCurrentDay)
+		// console.log(startCurrentDay, endCurrentDay)
 		const responseDaily = await getMoodsByDay(
 			id,
 			startCurrentDay,
 			endCurrentDay
 		)
-		console.log(responseDaily)
+		// console.log(responseDaily)
 		return responseDaily
 	}
 

@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 const SignInButton = () => {
 	const { data: session } = useSession()
-	console.log(session)
+	// console.log(session)
 	if (session && session.user) {
 		return (
 			<Link href={'/api/auth/signout'}>

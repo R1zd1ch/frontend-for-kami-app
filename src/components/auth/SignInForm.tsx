@@ -34,12 +34,12 @@ const SignInForm = ({}) => {
 
 	const onSubmit = async (data: z.infer<typeof SignInSchema>) => {
 		setLoading(true)
-		console.log(data)
+		// console.log(data)
 		const result = await login(data.username, data.password)
-		console.log(result)
+		// console.log(result)
 		// router.push('/main')
 		if (result?.error) {
-			console.log(result.error)
+			// console.log(result.error)
 			setLoading(false)
 		}
 	}

@@ -199,11 +199,11 @@ export const useBookStore = create<BookStore>((set, get) => ({
 			const { id } = await apiCreateBook(userId, {
 				...catalogBook,
 			})
-			console.log('Book created', id)
+			// console.log('Book created', id)
 
 			const favouriteBook = await addToFavourites(userId, id)
 
-			console.log('Book added to favourites', favouriteBook)
+			// console.log('Book added to favourites', favouriteBook)
 
 			set(state => ({
 				books: state.books.map(book =>

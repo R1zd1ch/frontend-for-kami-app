@@ -62,7 +62,7 @@ export async function createBook(
 			categories: book.categories,
 			status: 'to-read',
 		})
-		console.log(response.data)
+		// console.log(response.data)
 		return response.data
 	} catch (error) {
 		console.error('Failed to create book:', error)
