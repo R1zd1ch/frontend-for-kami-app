@@ -180,8 +180,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
 		socket.on('chatCreated', (newChat: Chat) => {
 			set(state => ({
-				chats: [...state.chats, newChat],
-				selectedChat: state.selectedChat || newChat,
+				chats: Array.from(
+					new Map([...state.chats, newChat].map(c => [c.id, c])).values()
+				),
 			}))
 			get().joinChatRooms([newChat])
 		})

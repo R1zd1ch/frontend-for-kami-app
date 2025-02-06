@@ -6,6 +6,19 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 }
 
+@layer components {
+	.scroll-container {
+		overflow-anchor: none !important;
+		scrollbar-gutter: stable;
+	}
+}
+
+@supports (-webkit-touch-callout: none) {
+	.scroll-container {
+		-webkit-overflow-scrolling: touch;
+	}
+}
+
 @layer base {
 	:root {
 		--background: 272 30% 98%;

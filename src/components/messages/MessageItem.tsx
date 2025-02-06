@@ -8,6 +8,7 @@ const MessageItem = ({
 	message: Message
 	userId: string
 }) => {
+	console.log(message)
 	return (
 		<div
 			className={`flex ${
