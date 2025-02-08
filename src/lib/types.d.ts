@@ -189,6 +189,13 @@ export interface GiftAnalytics {
 	}
 }
 
+export type UsersWhoSeenMessage = {
+	id: string
+	username: string
+	avatarUrl?: string
+	seenAt?: string
+}
+
 export type Message = {
 	id: string
 	content: string
@@ -200,6 +207,7 @@ export type Message = {
 		username: string
 		avatarUrl?: string
 	}
+	seenBy: UsersWhoSeenMessage[] | []
 }
 
 export type Chat = {
@@ -216,4 +224,5 @@ export type Chat = {
 			lastName?: string
 		}
 	}[]
+	unreadMessagesCount: number
 }

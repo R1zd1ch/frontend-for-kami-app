@@ -24,6 +24,7 @@ import { usePathname } from 'next/navigation'
 import CreatePrivateChat from './CreatePrivateChat'
 import { getAllUsers } from '@/api/fetchprofile'
 import { CreateGroupChat } from './CreateGroupChat'
+import { Badge } from '../ui/badge'
 
 export const SidebarContext = createContext({ isExpanded: false })
 
@@ -52,8 +53,6 @@ export default function SidebarChats({ userId }: { userId: string }) {
 	const handleSelect = (chat: Chat) => {
 		setSelectedChat(chat)
 	}
-
-	// console.log(userId)
 
 	return (
 		<Card
@@ -110,10 +109,28 @@ export default function SidebarChats({ userId }: { userId: string }) {
 									</>
 								) : (
 									<div className=''>
-										{selectedTab === 'private' ? (
+										{/* {selectedTab === 'private' ? (
 											<User></User>
 										) : (
 											<Users></Users>
+										)} */}
+
+										{selectedTab === 'private' ? (
+											<TabsTrigger
+												className='rounded-full bg-primary hover:bg-primary/90 active:bg-primary'
+												value='group'
+											>
+												<User style={{ width: '20px', height: '20px' }}></User>
+											</TabsTrigger>
+										) : (
+											<TabsTrigger
+												className='rounded-full bg-primary hover:bg-primary/80 active:bg-primary'
+												value='private'
+											>
+												<Users
+													style={{ width: '20px', height: '20px' }}
+												></Users>
+											</TabsTrigger>
 										)}
 									</div>
 								)}
@@ -130,8 +147,16 @@ export default function SidebarChats({ userId }: { userId: string }) {
 												key={chat.id}
 												id={chat.id}
 												username={chat.participants[1].user.username}
-												firstName={chat.participants[1].user.firstName}
-												lastName={chat.participants[1].user.lastName}
+												firstName={
+													chat.participants[1].user.firstName
+														? chat.participants[1].user.firstName
+														: ''
+												}
+												lastName={
+													chat.participants[1].user.lastName
+														? chat.participants[1].user.lastName
+														: ''
+												}
 												avatarUrl={
 													chat.participants[1].user.avatarUrl as string
 												}
@@ -139,6 +164,7 @@ export default function SidebarChats({ userId }: { userId: string }) {
 												active={
 													selectedChat?.id === chat.id || chatIdPath === chat.id
 												}
+												unreadMessagesCount={chat.unreadMessagesCount}
 											></SidebarItemPrivate>
 										</div>
 									))}
@@ -159,6 +185,7 @@ export default function SidebarChats({ userId }: { userId: string }) {
 												active={
 													selectedChat?.id === chat.id || chatIdPath === chat.id
 												}
+												unreadMessagesCount={chat.unreadMessagesCount}
 											></SidebarItemGroup>
 										</div>
 									))}
@@ -199,12 +226,22 @@ export default function SidebarChats({ userId }: { userId: string }) {
 											<DropdownMenuSeparator></DropdownMenuSeparator>
 											<DropdownMenuItem>
 												<div className='flex items-center gap-2'>
-													<User></User> <p>Личный</p>
+													<User></User>{' '}
+													<CreatePrivateChat
+														senderId={userId}
+														users={users}
+														isCollapsed
+													></CreatePrivateChat>
 												</div>
 											</DropdownMenuItem>
 											<DropdownMenuItem>
 												<div className='flex items-center gap-2'>
-													<Users></Users> <p>Беседа</p>
+													<Users></Users>{' '}
+													<CreateGroupChat
+														users={users}
+														senderId={userId}
+														isCollapsed
+													></CreateGroupChat>
 												</div>
 											</DropdownMenuItem>
 										</DropdownMenuContent>
@@ -227,6 +264,7 @@ export function SidebarItemPrivate({
 	active = false,
 	id,
 	messages,
+	unreadMessagesCount = 0,
 }: {
 	firstName?: string
 	lastName?: string
@@ -235,13 +273,14 @@ export function SidebarItemPrivate({
 	active?: boolean
 	id: string
 	messages: Message[]
+	unreadMessagesCount?: number
 }) {
 	const { isExpanded } = useContext(SidebarContext)
 
 	return (
 		<Link href={`/main/messages/${id}`}>
 			<div
-				className={`flex flex-col p-1 rounded-xl border-2 transition-all duration-150 cursor-pointer hover:bg-primary/90 gap-1  ${
+				className={`flex flex-col p-1 rounded-xl border-2 transition-all duration-150 cursor-pointer relative hover:bg-primary/90 gap-1  ${
 					active ? 'bg-primary' : 'bg-muted'
 				}`}
 			>
@@ -263,6 +302,16 @@ export function SidebarItemPrivate({
 							? `${firstName} ${lastName}`
 							: `@${username}`}
 					</p>
+
+					{unreadMessagesCount > 0 && (
+						<Badge
+							className={`${
+								isExpanded ? '' : 'absolute right-1 top-1 p-1 text-xs'
+							}`}
+						>
+							{unreadMessagesCount}
+						</Badge>
+					)}
 				</div>
 				{messages.length > 0 && (
 					<div
@@ -295,11 +344,13 @@ export function SidebarItemGroup({
 	active = false,
 	id,
 	messages,
+	unreadMessagesCount = 0,
 }: {
 	name?: string
 	active?: boolean
 	id: string
 	messages: Message[]
+	unreadMessagesCount?: number
 }) {
 	const { isExpanded } = useContext(SidebarContext)
 	// console.log(messages)
@@ -325,6 +376,7 @@ export function SidebarItemGroup({
 					>
 						{name}
 					</p>
+					{unreadMessagesCount > 0 && <Badge>{unreadMessagesCount}</Badge>}
 				</div>
 				{messages.length > 0 && (
 					<div

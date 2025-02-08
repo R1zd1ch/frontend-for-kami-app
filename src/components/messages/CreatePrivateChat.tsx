@@ -19,9 +19,11 @@ import { cn } from '@/lib/utils'
 export default function CreatePrivateChat({
 	users,
 	senderId,
+	isCollapsed = false,
 }: {
 	users: UserProfile[]
 	senderId: string
+	isCollapsed?: boolean
 }) {
 	const [selectedUser, setSelectedUser] = useState<string | null>(null)
 	const [isOpen, setIsOpen] = useState(false)
@@ -44,7 +46,13 @@ export default function CreatePrivateChat({
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
-				<Button className='flex-1'>Личный</Button>
+				{isCollapsed ? (
+					<Button className='w-full h-full py-2 my-0' variant={'secondary'}>
+						Беседа
+					</Button>
+				) : (
+					<Button className='flex-1'>Личный</Button>
+				)}
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>

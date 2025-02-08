@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { io, Socket } from 'socket.io-client'
-import { Message, Chat } from '@/lib/types'
+import { Message, Chat, UsersWhoSeenMessage } from '@/lib/types'
 import { getMessages } from '@/api/chat'
 import { toast } from 'sonner'
 
@@ -33,6 +33,11 @@ interface ChatState {
 	joinChatRooms: (chats: Chat[]) => void
 	setSelectedChat: (chat: Chat | null) => void
 	sendMessage: (content: string, userId: string) => Promise<void>
+	markMessagesAsSeen: (
+		chatId: string,
+		userId: string,
+		messageIds: string[]
+	) => Promise<void>
 	loadMessages: (
 		chatId: string,
 		userId: string,
@@ -66,6 +71,40 @@ export const useChatStore = create<ChatState>((set, get) => ({
 			})
 		} catch (error) {
 			console.error('Ошибка отправки:', error)
+		}
+	},
+
+	markMessagesAsSeen: async (chatId, userId, messageIds) => {
+		const { socket } = get()
+		const { messages } = get()
+
+		const message = messages.find(msg => msg.id === messageIds[0])
+		if (!socket || !message) return
+		const messageIsSeenByMe = message?.seenBy?.some(user => user.id === userId)
+		const messageIsCreatedByMe = message?.senderId === userId
+
+		if (messageIsSeenByMe || messageIsCreatedByMe) return
+		if (!messageIsSeenByMe && !messageIsCreatedByMe) {
+			console.log(messageIsSeenByMe, messageIsCreatedByMe)
+			set(state => {
+				const chat = state.chats.find(c => c.id === chatId)
+
+				if (chat && message) {
+					const unreadMessages =
+						chat?.unreadMessagesCount > 0 ? chat?.unreadMessagesCount - 1 : 0
+					return {
+						...state,
+						chats: state.chats.map(c =>
+							c.id === message.chatId
+								? { ...c, unreadMessagesCount: unreadMessages }
+								: c
+						),
+					}
+				}
+				return { ...state }
+			})
+
+			socket.emit('markAsSeen', { chatId, userId, messageIds })
 		}
 	},
 
@@ -171,6 +210,32 @@ export const useChatStore = create<ChatState>((set, get) => ({
 				})
 			}
 
+			if (
+				message.senderId !== userId &&
+				!message.seenBy.some(user => user.id === userId)
+			) {
+				const handle = setTimeout(() => {
+					set(state => {
+						const chat = state.chats.find(c => c.id === message.chatId)
+						if (chat) {
+							const unreadMessages = chat?.unreadMessagesCount + 1
+							return {
+								...state,
+								chats: state.chats.map(c =>
+									c.id === message.chatId
+										? { ...c, unreadMessagesCount: unreadMessages }
+										: c
+								),
+							}
+						}
+
+						return { ...state }
+					})
+				}, 0)
+
+				return () => clearTimeout(handle)
+			}
+
 			set(state => ({
 				chats: state.chats.map(c =>
 					c.id === message.chatId ? { ...c, messages: [message] } : c
@@ -202,6 +267,47 @@ export const useChatStore = create<ChatState>((set, get) => ({
 				}
 			})
 		})
+
+		socket.on(
+			'messagesSeen',
+			(data: {
+				chatId: string
+				messageIds: string[]
+				userId: string
+				records: Array<{
+					userId: string
+					messageId: string
+					seenAt: string
+					user: { id: string; username: string; avatarUrl: string }
+				}>
+			}) => {
+				console.log(
+					`Пользователь ${data.userId} просмотрел сообщения: `,
+					data.messageIds
+				)
+
+				set(state => ({
+					messages: state.messages.map(msg => {
+						const record = data.records?.find(r => r.messageId === msg.id)
+						if (record && msg.senderId !== data.userId) {
+							const newSeen: UsersWhoSeenMessage = {
+								id: record.user.id || record.userId,
+								username: record.user.username,
+								avatarUrl: record.user.avatarUrl,
+							}
+							const updatedSeenBy = Array.from(
+								new Map(
+									[...(msg.seenBy || []), newSeen].map(user => [user.id, user])
+								).values()
+							)
+
+							return { ...msg, seenBy: updatedSeenBy }
+						}
+						return msg
+					}),
+				}))
+			}
+		)
 
 		socket.on('groupUpdated', (updatedChat: Chat) => {
 			set(state => ({

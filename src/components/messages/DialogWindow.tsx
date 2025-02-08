@@ -1,7 +1,7 @@
 'use client'
 import { useChatStore } from '@/storage/chatStore'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { Card } from '../ui/card'
+import { Card, CardContent } from '../ui/card'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
@@ -12,6 +12,7 @@ import { useIntersectionObserver } from '@uidotdev/usehooks'
 import AddToGroup from './AddToGroup'
 import { UserProfile } from '@/lib/types'
 import { getAllUsers } from '@/api/fetchprofile'
+import { TooltipProvider } from '../ui/tooltip'
 
 const MemoizedMessageItem = memo(MessageItem)
 
@@ -39,7 +40,7 @@ const DialogWindow = ({
 	const [users, setUsers] = useState<UserProfile[]>([])
 	const [loading, setLoading] = useState(false)
 	const [isNearBottom, setIsNearBottom] = useState(true)
-	const [сounterNewMessagesByOther, setCounterNewMessagesByOther] = useState(0)
+	const [counterUnreadMessages, setCounterUnreadMessages] = useState(0)
 
 	const prevScrollHeight = useRef<number>(0)
 	const router = useRouter()
@@ -47,6 +48,10 @@ const DialogWindow = ({
 		root: containerRef.current,
 		threshold: 0,
 	})
+
+	useEffect(() => {
+		setCounterUnreadMessages(selectedChat?.unreadMessagesCount || 0)
+	}, [selectedChat?.unreadMessagesCount])
 
 	const handleScroll = useCallback(() => {
 		if (!containerRef.current) return
@@ -70,7 +75,6 @@ const DialogWindow = ({
 
 		const lastMessage = messages[messages.length - 1]
 		const isLastMessageByMe = lastMessage?.senderId === userId
-		const isLastMessageByOther = lastMessage?.senderId !== userId
 
 		if (isLastMessageByMe && isNewMessage) {
 			messagesEndRef.current?.scrollIntoView({
@@ -154,7 +158,6 @@ const DialogWindow = ({
 		const content = inputRef.current?.value?.trim()
 		if (!content || !selectedChat) return
 
-		const prevHeight = containerRef.current?.scrollHeight || 0
 		await sendMessage(content, userId)
 		if (inputRef.current) inputRef.current.value = ''
 
@@ -193,7 +196,7 @@ const DialogWindow = ({
 	}
 
 	return (
-		<Card className='flex-1 flex flex-col rounded-3xl overflow-hidden'>
+		<Card className='flex-1 flex flex-col rounded-3xl overflow-hidden relative'>
 			{/* Header */}
 			<div className='flex items-center justify-between p-4 border-b bg-muted/50'>
 				<div className='flex items-center'>
@@ -230,7 +233,7 @@ const DialogWindow = ({
 
 			{/* Контейнер сообщений */}
 			<div
-				className='flex-1 px-4 bg-chat-background overflow-y-auto scroll-container'
+				className='flex-1 px-4 bg-chat-background overflow-y-auto scroll-container '
 				ref={containerRef}
 			>
 				{/* Индикатор загрузки */}
@@ -252,16 +255,20 @@ const DialogWindow = ({
 					)}
 
 				{/* Лист сообщений */}
-				<div className='space-y-2 py-4 relative'>
-					{messages.map(message => (
-						<MemoizedMessageItem
-							key={message.id}
-							message={message}
-							userId={userId}
-						/>
-					))}
-					<div ref={messagesEndRef} />
-				</div>
+				<TooltipProvider>
+					<div className='space-y-2 py-4 relative'>
+						{messages.map(message => (
+							<MemoizedMessageItem
+								key={message.id}
+								message={message}
+								userId={userId}
+								type={selectedChat.type}
+							/>
+						))}
+
+						<div ref={messagesEndRef} className='h-0' />
+					</div>
+				</TooltipProvider>
 			</div>
 
 			{/* Инпуты хуимпуты */}
@@ -282,6 +289,11 @@ const DialogWindow = ({
 					</Button>
 				</div>
 			</div>
+			{counterUnreadMessages > 0 && (
+				<Card className='absolute right-[50%] left-[50%]  bottom-[10%] w-fit h-fit bg-primary rounded-full p-1'>
+					<p className='text-sm'>{counterUnreadMessages}</p>
+				</Card>
+			)}
 		</Card>
 	)
 }

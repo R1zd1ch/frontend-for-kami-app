@@ -15,9 +15,11 @@ import { Checkbox } from '../ui/checkbox'
 export function CreateGroupChat({
 	users,
 	senderId,
+	isCollapsed = false,
 }: {
 	users: UserProfile[]
 	senderId: string
+	isCollapsed?: boolean
 }) {
 	const [selectedUsers, setSelectedUsers] = useState<string[]>([])
 	const [chatName, setChatName] = useState('')
@@ -42,7 +44,13 @@ export function CreateGroupChat({
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
-				<Button className='flex-1'>Беседа</Button>
+				{isCollapsed ? (
+					<Button className='w-full h-full py-2 my-0' variant={'secondary'}>
+						Беседа
+					</Button>
+				) : (
+					<Button className='flex-1'>Беседа</Button>
+				)}
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
